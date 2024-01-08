@@ -1,6 +1,4 @@
-import { getShippingShips } from "./database.js";
-import { getHaulingShips } from "./dockslist.js";
-
+import { getShippingShips, getHaulingShips } from "./database.js";
 
 export const HaulerList = () => {
 	const haulers = getHaulingShips();
@@ -8,9 +6,9 @@ export const HaulerList = () => {
 
 	for (const hauler of haulers) {
 		haulersHTML += `
-        <li data-type="haulers" 
+        <li data-type="hauler" 
         data-hauler-id="${hauler.id}"
-        >${hauler.id}
+        >${hauler.name}
         </li>`;
 	}
 
@@ -20,19 +18,25 @@ export const HaulerList = () => {
 };
 
 document.addEventListener(
-    "click",
-    (clickEvent) => {
-        const itemClicked = clickEvent.target;
+	"click",
+	(clickEvent) => {
+		const itemClicked = clickEvent.target
 
-        if (itemClicked.dataset.type === "hauler") {
-            const haulerId = itemClicked.dataset.haulerId;
-            const ships = getShippingShips()
+		if (itemClicked.dataset.type === "hauler") {
+			const haulerId = parseInt(itemClicked.dataset.haulerId)
 
-            for (let i = 0; i < ships.length; i++) {
-                if (ships[i].haulerId === haulerId) {
-                    window.alert()
-                }
-            }
-        }
-    }
+			let shipCounter = 0            
+
+			const shippingShips = getShippingShips()
+
+			for (const ship of shippingShips) {
+                if (ship.haulerIds.includes(haulerId)) {
+					shipCounter++
+                    
+				}
+			}
+
+			window.alert(`This hauler is carrying ${shipCounter} shipping ships.`)
+		}		
+	}
 )
